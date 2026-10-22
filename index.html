@@ -1,294 +1,564 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-TW" class="scroll-smooth">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/x-icon" href="./images/favicon.ico" /> 
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="./images/favicon.ico" />
     <title>Developer Bookmarks Dashboard</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts: Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <!-- Font Awesome for Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
     <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    },
-                    colors: {
-                        brand: {
-                            50: '#eef2ff',
-                            100: '#e0e7ff',
-                            500: '#6366f1', // Indigo 500
-                            600: '#4f46e5', // Indigo 600
-                            900: '#312e81',
-                        }
-                    }
-                }
-            }
-        }
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ["Inter", "sans-serif"],
+            },
+            colors: {
+              brand: {
+                50: "#eef2ff",
+                100: "#e0e7ff",
+                500: "#6366f1", // Indigo 500
+                600: "#4f46e5", // Indigo 600
+                900: "#312e81",
+              },
+            },
+          },
+        },
+      };
     </script>
     <style>
-        /* Custom Scrollbar for a premium look */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 4px;
-        }
-        .dark ::-webkit-scrollbar-thumb {
-            background: #475569;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
-        }
-        .dark ::-webkit-scrollbar-thumb:hover {
-            background: #64748b;
-        }
-        
-        /* Hide scrollbar for sidebar but keep functionality */
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-        .no-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
+      /* Custom Scrollbar for a premium look */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 4px;
+      }
+      .dark ::-webkit-scrollbar-thumb {
+        background: #475569;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+      }
+      .dark ::-webkit-scrollbar-thumb:hover {
+        background: #64748b;
+      }
 
-        /* Gradient Text */
-        .text-gradient {
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+      /* Hide scrollbar for sidebar but keep functionality */
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+
+      /* Gradient Text */
+      .text-gradient {
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
     </style>
-</head>
-<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200 font-sans transition-colors duration-300 flex h-screen overflow-hidden antialiased">
-
+  </head>
+  <body
+    class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200 font-sans transition-colors duration-300 flex h-screen overflow-hidden antialiased"
+  >
     <!-- Mobile Overlay -->
-    <div id="mobile-overlay" class="fixed inset-0 bg-slate-900/50 z-40 hidden lg:hidden transition-opacity backdrop-blur-sm" onclick="toggleSidebar()"></div>
+    <div
+      id="mobile-overlay"
+      class="fixed inset-0 bg-slate-900/50 z-40 hidden lg:hidden transition-opacity backdrop-blur-sm"
+      onclick="toggleSidebar()"
+    ></div>
 
     <!-- Sidebar -->
-    <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-72 bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700/50 transform -translate-x-full lg:translate-x-0 lg:static lg:flex flex-col transition-transform duration-300 ease-in-out shadow-xl lg:shadow-none">
-        
-        <!-- Logo Area -->
-        <div class="h-20 flex items-center px-6 border-b border-slate-100 dark:border-slate-700/50 shrink-0">
-            <div class="flex items-center gap-3 w-full">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-500 to-purple-600 flex items-center justify-center text-white shadow-lg shadow-brand-500/30">
-                    <i class="fa-solid fa-code"></i>
-                </div>
-                <h1 class="text-xl font-bold bg-gradient-to-r from-brand-600 to-purple-600 dark:from-brand-400 dark:to-purple-400 text-gradient truncate">Dev Dashboard</h1>
-                <button onclick="toggleSidebar()" class="lg:hidden ml-auto text-slate-500 hover:text-slate-800 dark:hover:text-white">
-                    <i class="fa-solid fa-xmark text-xl"></i>
-                </button>
-            </div>
+    <aside
+      id="sidebar"
+      class="fixed inset-y-0 left-0 z-50 w-72 bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700/50 transform -translate-x-full lg:translate-x-0 lg:static lg:flex flex-col transition-transform duration-300 ease-in-out shadow-xl lg:shadow-none"
+    >
+      <!-- Logo Area -->
+      <div
+        class="h-20 flex items-center px-6 border-b border-slate-100 dark:border-slate-700/50 shrink-0"
+      >
+        <div class="flex items-center gap-3 w-full">
+          <div
+            class="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-500 to-purple-600 flex items-center justify-center text-white shadow-lg shadow-brand-500/30"
+          >
+            <i class="fa-solid fa-code"></i>
+          </div>
+          <h1
+            class="text-xl font-bold bg-gradient-to-r from-brand-600 to-purple-600 dark:from-brand-400 dark:to-purple-400 text-gradient truncate"
+          >
+            Dev Dashboard
+          </h1>
+          <button
+            onclick="toggleSidebar()"
+            class="lg:hidden ml-auto text-slate-500 hover:text-slate-800 dark:hover:text-white"
+          >
+            <i class="fa-solid fa-xmark text-xl"></i>
+          </button>
         </div>
+      </div>
 
-        <!-- Navigation -->
-        <nav class="flex-1 overflow-y-auto no-scrollbar py-6 px-4 space-y-1" id="nav-links">
-            <!-- Nav links will be injected here by JS -->
-        </nav>
+      <!-- Navigation -->
+      <nav
+        class="flex-1 overflow-y-auto no-scrollbar py-6 px-4 space-y-1"
+        id="nav-links"
+      >
+        <!-- Nav links will be injected here by JS -->
+      </nav>
 
-        <!-- Footer / Theme Toggle -->
-        <div class="p-4 border-t border-slate-100 dark:border-slate-700/50 shrink-0">
-            <button id="theme-toggle" class="w-full flex items-center justify-between px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-700/50 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors font-medium">
-                <span class="flex items-center gap-3">
-                    <i id="theme-icon" class="fa-solid fa-moon text-brand-500 dark:text-yellow-400 w-5 text-center"></i>
-                    <span id="theme-text">切換深色模式</span>
-                </span>
-            </button>
-        </div>
+      <!-- Footer / Theme Toggle -->
+      <div
+        class="p-4 border-t border-slate-100 dark:border-slate-700/50 shrink-0"
+      >
+        <button
+          id="theme-toggle"
+          class="w-full flex items-center justify-between px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-700/50 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors font-medium"
+        >
+          <span class="flex items-center gap-3">
+            <i
+              id="theme-icon"
+              class="fa-solid fa-moon text-brand-500 dark:text-yellow-400 w-5 text-center"
+            ></i>
+            <span id="theme-text">切換深色模式</span>
+          </span>
+        </button>
+      </div>
     </aside>
 
     <!-- Main Content -->
     <main class="flex-1 flex flex-col h-screen min-w-0 relative">
-        
-        <!-- Header & Search -->
-        <header class="h-20 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-700/50 flex items-center px-4 md:px-8 shrink-0 z-30 sticky top-0">
-            <button onclick="toggleSidebar()" class="lg:hidden mr-4 w-10 h-10 flex items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
-                <i class="fa-solid fa-bars"></i>
-            </button>
+      <!-- Header & Search -->
+      <header
+        class="h-20 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-700/50 flex items-center px-4 md:px-8 shrink-0 z-30 sticky top-0"
+      >
+        <button
+          onclick="toggleSidebar()"
+          class="lg:hidden mr-4 w-10 h-10 flex items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+        >
+          <i class="fa-solid fa-bars"></i>
+        </button>
 
-            <div class="relative flex-1 max-w-2xl group">
-                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <i class="fa-solid fa-magnifying-glass text-slate-400 group-focus-within:text-brand-500 transition-colors"></i>
-                </div>
-                <input type="text" id="search-input" placeholder="搜尋工具、框架、AI 服務..." 
-                       class="block w-full pl-11 pr-4 py-3 bg-slate-100 dark:bg-slate-800 border-2 border-transparent focus:border-brand-500/50 focus:bg-white dark:focus:bg-slate-900 rounded-xl text-sm transition-all outline-none dark:placeholder-slate-500 shadow-sm focus:shadow-md dark:text-white">
-                <button id="clear-search" class="absolute inset-y-0 right-0 pr-4 flex items-center hidden text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-        </header>
-
-        <!-- Content Area -->
-        <div class="flex-1 overflow-y-auto p-4 md:p-8 scroll-smooth" id="main-content">
-            <div id="bookmarks-container" class="max-w-7xl mx-auto space-y-16 pb-12">
-                <!-- Bookmarks will be injected here by JS -->
-            </div>
-            
-            <!-- Empty State -->
-            <div id="empty-state" class="hidden h-full flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 pb-20">
-                <div class="w-24 h-24 mb-6 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-4xl">
-                    <i class="fa-solid fa-ghost text-slate-300 dark:text-slate-600"></i>
-                </div>
-                <h3 class="text-xl font-semibold text-slate-700 dark:text-slate-200 mb-2">找不到相關工具</h3>
-                <p>請嘗試使用不同的關鍵字搜尋。</p>
-            </div>
+        <div class="relative flex-1 max-w-2xl group">
+          <div
+            class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none"
+          >
+            <i
+              class="fa-solid fa-magnifying-glass text-slate-400 group-focus-within:text-brand-500 transition-colors"
+            ></i>
+          </div>
+          <input
+            type="text"
+            id="search-input"
+            placeholder="搜尋工具、框架、AI 服務..."
+            class="block w-full pl-11 pr-4 py-3 bg-slate-100 dark:bg-slate-800 border-2 border-transparent focus:border-brand-500/50 focus:bg-white dark:focus:bg-slate-900 rounded-xl text-sm transition-all outline-none dark:placeholder-slate-500 shadow-sm focus:shadow-md dark:text-white"
+          />
+          <button
+            id="clear-search"
+            class="absolute inset-y-0 right-0 pr-4 flex items-center hidden text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+          >
+            <i class="fa-solid fa-xmark"></i>
+          </button>
         </div>
+      </header>
+
+      <!-- Content Area -->
+      <div
+        class="flex-1 overflow-y-auto p-4 md:p-8 scroll-smooth"
+        id="main-content"
+      >
+        <div
+          id="bookmarks-container"
+          class="max-w-7xl mx-auto space-y-16 pb-12"
+        >
+          <!-- Bookmarks will be injected here by JS -->
+        </div>
+
+        <!-- Empty State -->
+        <div
+          id="empty-state"
+          class="hidden h-full flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 pb-20"
+        >
+          <div
+            class="w-24 h-24 mb-6 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-4xl"
+          >
+            <i class="fa-solid fa-ghost text-slate-300 dark:text-slate-600"></i>
+          </div>
+          <h3
+            class="text-xl font-semibold text-slate-700 dark:text-slate-200 mb-2"
+          >
+            找不到相關工具
+          </h3>
+          <p>請嘗試使用不同的關鍵字搜尋。</p>
+        </div>
+      </div>
     </main>
 
     <!-- JavaScript Logic -->
     <script>
-        // Data Structure
-        const bookmarksData = [
+      // Data Structure
+      const bookmarksData = [
+        {
+          id: "ai-tools",
+          title: "AI 輔助與代碼託管",
+          icon: "fa-solid fa-brain",
+          color: "from-blue-500 to-cyan-500",
+          items: [
             {
-                id: 'ai-tools',
-                title: 'AI 輔助與代碼託管',
-                icon: 'fa-solid fa-brain',
-                color: 'from-blue-500 to-cyan-500',
-                items: [
-                    { name: 'ChatGPT', url: 'https://chat.openai.com/chat', desc: '強大的 AI 助手，協助解答問題與生成代碼。', icon: 'fa-solid fa-comment-dots' },
-                    { name: 'Claude', url: 'https://claude.ai/', desc: 'AI 寫扣與文本分析利器，具備強大上下文理解。', icon: 'fa-solid fa-robot' },
-                    { name: 'Gemini', url: 'https://gemini.google.com/', desc: 'Google 推出的多模態 AI 助理。', icon: 'fa-brands fa-google' },
-                    { name: 'DeepSeek', url: 'https://www.deepseek.com/', desc: '深度求索 AI 模型，擅長程式碼與邏輯推理。', icon: 'fa-solid fa-microchip' },
-                    { name: 'GitHub', url: 'https://github.com/', desc: '全球最大的程式碼版控與協作平台。', icon: 'fa-brands fa-github' },
-                    { name: 'Readdy', url: 'https://readdy.ai/', desc: '強大的 AI 網站產生器與設計工具。', icon: 'fa-solid fa-wand-magic-sparkles' }
-                ]
+              name: "ChatGPT",
+              url: "https://chat.openai.com/chat",
+              desc: "強大的 AI 助手，協助解答問題與生成代碼。",
+              icon: "fa-solid fa-comment-dots",
             },
             {
-                id: 'frontend-frameworks',
-                title: '前端框架與狀態管理',
-                icon: 'fa-solid fa-layer-group',
-                color: 'from-violet-500 to-purple-500',
-                items: [
-                    { name: 'React', url: 'https://react.dev/', desc: '由 Meta 維護的宣告式、元件化 JS 函式庫。', icon: 'fa-brands fa-react' },
-                    { name: 'Next.js', url: 'https://nextjs.org/', desc: '基於 React 的強大應用程式開發框架 (支援 SSR/SSG)。', icon: 'fa-solid fa-n' },
-                    { name: 'Redux', url: 'https://redux.js.org/', desc: '可預測的 JavaScript 應用程式全域狀態管理工具。', icon: 'fa-solid fa-box-archive' },
-                    { name: 'Zustand', url: 'https://zustand.docs.pmnd.rs/', desc: '極簡、快速且高擴充性的 React 狀態管理解決方案。', icon: 'fa-solid fa-bear' },
-                    { name: 'React Router', url: 'https://reactrouter.com/', desc: 'React 生態系統中最主流的宣告式路由管理。', icon: 'fa-solid fa-route' },
-                    { name: 'TanStack', url: 'https://tanstack.com/', desc: '高效能 Web 應用工具集 (包含 Query, Table, Router 等)。', icon: 'fa-solid fa-layer-group' }
-                ]
+              name: "Claude",
+              url: "https://claude.ai/",
+              desc: "AI 寫扣與文本分析利器，具備強大上下文理解。",
+              icon: "fa-solid fa-robot",
             },
             {
-                id: 'css-ui',
-                title: 'CSS 與 UI 系統',
-                icon: 'fa-solid fa-palette',
-                color: 'from-pink-500 to-rose-500',
-                items: [
-                    { name: 'Tailwind CSS', url: 'https://tailwindcss.com/', desc: '實用優先的 CSS 框架，快速建構客製化設計。', icon: 'fa-solid fa-wind' },
-                    { name: 'Bootstrap', url: 'https://getbootstrap.com/', desc: '經典且普及的響應式前端開源框架。', icon: 'fa-brands fa-bootstrap' },
-                    { name: 'shadcn/ui', url: 'https://ui.shadcn.com/', desc: '基於 Tailwind，可高度客製化與複製貼上的 UI 元件庫。', icon: 'fa-solid fa-cubes' },
-                    { name: 'CSS-Tricks Flexbox', url: 'https://css-tricks.com/snippets/css/a-guide-to-flexbox/', desc: '前端必備，最完整易懂的 Flexbox 排版圖文指南。', icon: 'fa-brands fa-css3-alt' }
-                ]
+              name: "Gemini",
+              url: "https://gemini.google.com/",
+              desc: "Google 推出的多模態 AI 助理。",
+              icon: "fa-brands fa-google",
             },
             {
-                id: 'runtime-build',
-                title: '執行環境與建置工具',
-                icon: 'fa-solid fa-terminal',
-                color: 'from-amber-500 to-orange-500',
-                items: [
-                    { name: 'Node.js', url: 'https://nodejs.org/', desc: '廣泛使用且生態系龐大的 JavaScript 執行環境。', icon: 'fa-brands fa-node-js' },
-                    { name: 'Deno', url: 'https://deno.com/', desc: '預設安全，內建支援 TypeScript 的現代執行環境。', icon: 'fa-solid fa-shield-halved' },
-                    { name: 'Bun', url: 'https://bun.com/', desc: '極速的 JavaScript 執行器、套件管理器與打包工具。', icon: 'fa-solid fa-bolt' },
-                    { name: 'Vite+', url: 'https://viteplus.dev/', desc: '新一代極速前端建置工具，提供極致的開發體驗。', icon: 'fa-solid fa-v' },
-                    { name: 'pnpm', url: 'https://pnpm.io/', desc: '快速、節省硬碟空間的 Node.js 套件管理器。', icon: 'fa-solid fa-box-open' },
-                    { name: 'Yarn', url: 'https://yarnpkg.com/', desc: '快速、可靠且安全的替代套件管理器。', icon: 'fa-brands fa-yarn' },
-                    { name: 'TypeScript', url: 'https://www.typescriptlang.org/', desc: '具備強大靜態型別系統的 JavaScript 超集。', icon: 'fa-solid fa-file-code' },
-                    { name: 'Babel', url: 'https://babeljs.io/', desc: '將新一代 JavaScript 語法編譯為舊版以支援所有瀏覽器。', icon: 'fa-solid fa-language' }
-                ]
+              name: "DeepSeek",
+              url: "https://www.deepseek.com/",
+              desc: "深度求索 AI 模型，擅長程式碼與邏輯推理。",
+              icon: "fa-solid fa-microchip",
             },
             {
-                id: 'design-assets',
-                title: '設計素材與圖示',
-                icon: 'fa-solid fa-pen-nib',
-                color: 'from-emerald-500 to-teal-500',
-                items: [
-                    { name: 'ColorSpace', url: 'https://mycolor.space/', desc: '輸入一個顏色，即可生成完美的調色盤與 CSS 漸層。', icon: 'fa-solid fa-fill-drip' },
-                    { name: 'Wordmark', url: 'https://wordmark.it/', desc: '輸入文字，快速預覽與比較電腦中安裝的所有字體。', icon: 'fa-solid fa-font' },
-                    { name: 'React Icons', url: 'https://react-icons.github.io/react-icons/', desc: '匯集多種熱門圖示庫，方便在 React 專案中直接引入。', icon: 'fa-solid fa-icons' },
-                    { name: 'Material Symbols', url: 'https://fonts.google.com/icons', desc: 'Google 官方提供，設計現代且豐富的開源圖示集。', icon: 'fa-brands fa-google' },
-                    { name: 'Font Awesome', url: 'https://fontawesome.com/', desc: '全球最知名的圖示字體與 SVG 圖示庫。', icon: 'fa-solid fa-flag' },
-                    { name: 'Nerd Fonts', url: 'https://www.nerdfonts.com/', desc: '針對開發者終端機修補的字體，內建大量開發相關圖示。', icon: 'fa-solid fa-glasses' },
-                    { name: 'Favicon.io', url: 'https://favicon.io/', desc: '快速從文字、圖片或 Emoji 生成網站專用 Favicon。', icon: 'fa-solid fa-image' }
-                ]
+              name: "GitHub",
+              url: "https://github.com/",
+              desc: "全球最大的程式碼版控與協作平台。",
+              icon: "fa-brands fa-github",
             },
             {
-                id: 'dev-utilities',
-                title: '開發實用工具',
-                icon: 'fa-solid fa-wrench',
-                color: 'from-slate-500 to-gray-500',
-                items: [
-                    { name: 'Can I use', url: 'https://caniuse.com/', desc: '查詢前端 Web 技術在各大瀏覽器中的支援度與相容性。', icon: 'fa-solid fa-browser' },
-                    { name: 'RegExr', url: 'https://regexr.com/', desc: '學習、撰寫與即時測試正規表達式的強大線上工具。', icon: 'fa-solid fa-code-compare' },
-                    { name: 'JS Keycodes', url: 'https://www.toptal.com/developers/keycode/table', desc: '快速查詢按鍵對應的 event.keyCode 與 event.key 值。', icon: 'fa-solid fa-keyboard' },
-                    { name: 'gitignore.io', url: 'https://www.toptal.com/developers/gitignore', desc: '輸入作業系統或 IDE，一鍵生成最佳實踐的 .gitignore 檔案。', icon: 'fa-solid fa-file-shield' },
-                    { name: 'CodePen', url: 'https://codepen.io/', desc: '線上前端程式碼沙箱，適合快速測試與分享靈感。', icon: 'fa-brands fa-codepen' }
-                ]
+              name: "Readdy",
+              url: "https://readdy.ai/",
+              desc: "強大的 AI 網站產生器與設計工具。",
+              icon: "fa-solid fa-wand-magic-sparkles",
+            },
+          ],
+        },
+        {
+          id: "frontend-frameworks",
+          title: "前端框架與狀態管理",
+          icon: "fa-solid fa-layer-group",
+          color: "from-violet-500 to-purple-500",
+          items: [
+            {
+              name: "React",
+              url: "https://react.dev/",
+              desc: "由 Meta 維護的宣告式、元件化 JS 函式庫。",
+              icon: "fa-brands fa-react",
             },
             {
-                id: 'cloud-deploy',
-                title: '雲端與部署',
-                icon: 'fa-solid fa-cloud-arrow-up',
-                color: 'from-sky-500 to-blue-500',
-                items: [
-                    { name: 'Netlify', url: 'https://www.netlify.com/', desc: '強大的靜態網站託管平台，提供自動化 CI/CD 部署。', icon: 'fa-solid fa-server' },
-                    { name: 'Cloudflare', url: 'https://dash.cloudflare.com/login', desc: '提供業界頂尖的 CDN 服務、DNS 管理與網站安全防護。', icon: 'fa-solid fa-cloud' },
-                    { name: 'LINE Developers', url: 'https://developers.line.biz/', desc: 'LINE API 官方入口，開發 Chatbot 與 LIFF 應用的平台。', icon: 'fa-brands fa-line' },
-                    { name: 'ImgBB', url: 'https://zh-hk.imgbb.com/', desc: '免費且快速的圖片託管服務，適合用於論壇或輕量開發測試。', icon: 'fa-solid fa-image-portrait' }
-                ]
-            }
-        ];
+              name: "Next.js",
+              url: "https://nextjs.org/",
+              desc: "基於 React 的強大應用程式開發框架 (支援 SSR/SSG)。",
+              icon: "fa-solid fa-n",
+            },
+            {
+              name: "Redux",
+              url: "https://redux.js.org/",
+              desc: "可預測的 JavaScript 應用程式全域狀態管理工具。",
+              icon: "fa-solid fa-box-archive",
+            },
+            {
+              name: "Zustand",
+              url: "https://zustand.docs.pmnd.rs/",
+              desc: "極簡、快速且高擴充性的 React 狀態管理解決方案。",
+              icon: "fa-solid fa-bear",
+            },
+            {
+              name: "React Router",
+              url: "https://reactrouter.com/",
+              desc: "React 生態系統中最主流的宣告式路由管理。",
+              icon: "fa-solid fa-route",
+            },
+            {
+              name: "TanStack",
+              url: "https://tanstack.com/",
+              desc: "高效能 Web 應用工具集 (包含 Query, Table, Router 等)。",
+              icon: "fa-solid fa-layer-group",
+            },
+          ],
+        },
+        {
+          id: "css-ui",
+          title: "CSS 與 UI 系統",
+          icon: "fa-solid fa-palette",
+          color: "from-pink-500 to-rose-500",
+          items: [
+            {
+              name: "Tailwind CSS",
+              url: "https://tailwindcss.com/",
+              desc: "實用優先的 CSS 框架，快速建構客製化設計。",
+              icon: "fa-solid fa-wind",
+            },
+            {
+              name: "Bootstrap",
+              url: "https://getbootstrap.com/",
+              desc: "經典且普及的響應式前端開源框架。",
+              icon: "fa-brands fa-bootstrap",
+            },
+            {
+              name: "shadcn/ui",
+              url: "https://ui.shadcn.com/",
+              desc: "基於 Tailwind，可高度客製化與複製貼上的 UI 元件庫。",
+              icon: "fa-solid fa-cubes",
+            },
+            {
+              name: "CSS-Tricks Flexbox",
+              url: "https://css-tricks.com/snippets/css/a-guide-to-flexbox/",
+              desc: "前端必備，最完整易懂的 Flexbox 排版圖文指南。",
+              icon: "fa-brands fa-css3-alt",
+            },
+          ],
+        },
+        {
+          id: "runtime-build",
+          title: "執行環境與建置工具",
+          icon: "fa-solid fa-terminal",
+          color: "from-amber-500 to-orange-500",
+          items: [
+            {
+              name: "Node.js",
+              url: "https://nodejs.org/",
+              desc: "廣泛使用且生態系龐大的 JavaScript 執行環境。",
+              icon: "fa-brands fa-node-js",
+            },
+            {
+              name: "Deno",
+              url: "https://deno.com/",
+              desc: "預設安全，內建支援 TypeScript 的現代執行環境。",
+              icon: "fa-solid fa-shield-halved",
+            },
+            {
+              name: "Bun",
+              url: "https://bun.com/",
+              desc: "極速的 JavaScript 執行器、套件管理器與打包工具。",
+              icon: "fa-solid fa-bolt",
+            },
+            {
+              name: "Vite+",
+              url: "https://viteplus.dev/",
+              desc: "新一代極速前端建置工具，提供極致的開發體驗。",
+              icon: "fa-solid fa-v",
+            },
+            {
+              name: "pnpm",
+              url: "https://pnpm.io/",
+              desc: "快速、節省硬碟空間的 Node.js 套件管理器。",
+              icon: "fa-solid fa-box-open",
+            },
+            {
+              name: "Yarn",
+              url: "https://yarnpkg.com/",
+              desc: "快速、可靠且安全的替代套件管理器。",
+              icon: "fa-brands fa-yarn",
+            },
+            {
+              name: "TypeScript",
+              url: "https://www.typescriptlang.org/",
+              desc: "具備強大靜態型別系統的 JavaScript 超集。",
+              icon: "fa-solid fa-file-code",
+            },
+            {
+              name: "Babel",
+              url: "https://babeljs.io/",
+              desc: "將新一代 JavaScript 語法編譯為舊版以支援所有瀏覽器。",
+              icon: "fa-solid fa-language",
+            },
+          ],
+        },
+        {
+          id: "design-assets",
+          title: "設計素材與圖示",
+          icon: "fa-solid fa-pen-nib",
+          color: "from-emerald-500 to-teal-500",
+          items: [
+            {
+              name: "Coolors",
+              url: "https://coolors.co/?home",
+              desc: "輸入一個顏色，即可生成完美的調色盤與 CSS 漸層。",
+              icon: "fa-solid fa-fill-drip",
+            },
+            {
+              name: "Wordmark",
+              url: "https://wordmark.it/",
+              desc: "輸入文字，快速預覽與比較電腦中安裝的所有字體。",
+              icon: "fa-solid fa-font",
+            },
+            {
+              name: "React Icons",
+              url: "https://react-icons.github.io/react-icons/",
+              desc: "匯集多種熱門圖示庫，方便在 React 專案中直接引入。",
+              icon: "fa-solid fa-icons",
+            },
+            {
+              name: "Material Symbols",
+              url: "https://fonts.google.com/icons",
+              desc: "Google 官方提供，設計現代且豐富的開源圖示集。",
+              icon: "fa-brands fa-google",
+            },
+            {
+              name: "Font Awesome",
+              url: "https://fontawesome.com/",
+              desc: "全球最知名的圖示字體與 SVG 圖示庫。",
+              icon: "fa-solid fa-flag",
+            },
+            {
+              name: "Nerd Fonts",
+              url: "https://www.nerdfonts.com/",
+              desc: "針對開發者終端機修補的字體，內建大量開發相關圖示。",
+              icon: "fa-solid fa-glasses",
+            },
+            {
+              name: "Favicon.io",
+              url: "https://favicon.io/",
+              desc: "快速從文字、圖片或 Emoji 生成網站專用 Favicon。",
+              icon: "fa-solid fa-image",
+            },
+          ],
+        },
+        {
+          id: "dev-utilities",
+          title: "開發實用工具",
+          icon: "fa-solid fa-wrench",
+          color: "from-slate-500 to-gray-500",
+          items: [
+            {
+              name: "Can I use",
+              url: "https://caniuse.com/",
+              desc: "查詢前端 Web 技術在各大瀏覽器中的支援度與相容性。",
+              icon: "fa-solid fa-browser",
+            },
+            {
+              name: "RegExr",
+              url: "https://regexr.com/",
+              desc: "學習、撰寫與即時測試正規表達式的強大線上工具。",
+              icon: "fa-solid fa-code-compare",
+            },
+            {
+              name: "JS Keycodes",
+              url: "https://www.toptal.com/developers/keycode/table",
+              desc: "快速查詢按鍵對應的 event.keyCode 與 event.key 值。",
+              icon: "fa-solid fa-keyboard",
+            },
+            {
+              name: "gitignore.io",
+              url: "https://www.toptal.com/developers/gitignore",
+              desc: "輸入作業系統或 IDE，一鍵生成最佳實踐的 .gitignore 檔案。",
+              icon: "fa-solid fa-file-shield",
+            },
+            {
+              name: "CodePen",
+              url: "https://codepen.io/",
+              desc: "線上前端程式碼沙箱，適合快速測試與分享靈感。",
+              icon: "fa-brands fa-codepen",
+            },
+          ],
+        },
+        {
+          id: "cloud-deploy",
+          title: "雲端與部署",
+          icon: "fa-solid fa-cloud-arrow-up",
+          color: "from-sky-500 to-blue-500",
+          items: [
+            {
+              name: "Netlify",
+              url: "https://www.netlify.com/",
+              desc: "強大的靜態網站託管平台，提供自動化 CI/CD 部署。",
+              icon: "fa-solid fa-server",
+            },
+            {
+              name: "Cloudflare",
+              url: "https://dash.cloudflare.com/login",
+              desc: "提供業界頂尖的 CDN 服務、DNS 管理與網站安全防護。",
+              icon: "fa-solid fa-cloud",
+            },
+            {
+              name: "LINE Developers",
+              url: "https://developers.line.biz/",
+              desc: "LINE API 官方入口，開發 Chatbot 與 LIFF 應用的平台。",
+              icon: "fa-brands fa-line",
+            },
+            {
+              name: "ImgBB",
+              url: "https://zh-hk.imgbb.com/",
+              desc: "免費且快速的圖片託管服務，適合用於論壇或輕量開發測試。",
+              icon: "fa-solid fa-image-portrait",
+            },
+          ],
+        },
+      ];
 
-        // Elements
-        const navLinksContainer = document.getElementById('nav-links');
-        const bookmarksContainer = document.getElementById('bookmarks-container');
-        const searchInput = document.getElementById('search-input');
-        const clearSearchBtn = document.getElementById('clear-search');
-        const emptyState = document.getElementById('empty-state');
-        const themeToggle = document.getElementById('theme-toggle');
-        const themeIcon = document.getElementById('theme-icon');
-        const themeText = document.getElementById('theme-text');
-        const sidebar = document.getElementById('sidebar');
-        const mobileOverlay = document.getElementById('mobile-overlay');
+      // Elements
+      const navLinksContainer = document.getElementById("nav-links");
+      const bookmarksContainer = document.getElementById("bookmarks-container");
+      const searchInput = document.getElementById("search-input");
+      const clearSearchBtn = document.getElementById("clear-search");
+      const emptyState = document.getElementById("empty-state");
+      const themeToggle = document.getElementById("theme-toggle");
+      const themeIcon = document.getElementById("theme-icon");
+      const themeText = document.getElementById("theme-text");
+      const sidebar = document.getElementById("sidebar");
+      const mobileOverlay = document.getElementById("mobile-overlay");
 
-        // Render Sidebar Navigation
-        function renderNavigation() {
-            navLinksContainer.innerHTML = bookmarksData.map(category => `
+      // Render Sidebar Navigation
+      function renderNavigation() {
+        navLinksContainer.innerHTML = bookmarksData
+          .map(
+            (category) => `
                 <a href="#${category.id}" onclick="closeSidebarOnMobile()" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-brand-50 dark:hover:bg-slate-700/50 hover:text-brand-600 dark:hover:text-brand-400 transition-colors group font-medium">
                     <div class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center group-hover:bg-white dark:group-hover:bg-slate-700 shadow-sm transition-colors">
                         <i class="${category.icon}"></i>
                     </div>
                     <span>${category.title}</span>
                 </a>
-            `).join('');
-        }
+            `,
+          )
+          .join("");
+      }
 
-        // Render Bookmarks
-        function renderBookmarks(filterText = '') {
-            const lowerFilter = filterText.toLowerCase();
-            let hasResults = false;
-            let html = '';
+      // Render Bookmarks
+      function renderBookmarks(filterText = "") {
+        const lowerFilter = filterText.toLowerCase();
+        let hasResults = false;
+        let html = "";
 
-            bookmarksData.forEach(category => {
-                const filteredItems = category.items.filter(item => 
-                    item.name.toLowerCase().includes(lowerFilter) || 
-                    item.desc.toLowerCase().includes(lowerFilter)
-                );
+        bookmarksData.forEach((category) => {
+          const filteredItems = category.items.filter(
+            (item) =>
+              item.name.toLowerCase().includes(lowerFilter) ||
+              item.desc.toLowerCase().includes(lowerFilter),
+          );
 
-                if (filteredItems.length > 0) {
-                    hasResults = true;
-                    html += `
+          if (filteredItems.length > 0) {
+            hasResults = true;
+            html += `
                         <section id="${category.id}" class="scroll-mt-24">
                             <div class="flex items-center gap-3 mb-6">
                                 <div class="w-10 h-10 rounded-xl bg-gradient-to-br ${category.color} flex items-center justify-center text-white shadow-md">
@@ -297,7 +567,9 @@
                                 <h2 class="text-2xl font-bold text-slate-800 dark:text-white tracking-tight">${category.title}</h2>
                             </div>
                             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-5">
-                                ${filteredItems.map(item => `
+                                ${filteredItems
+                                  .map(
+                                    (item) => `
                                     <a href="${item.url}" target="_blank" rel="noopener noreferrer" 
                                        class="group flex flex-col p-5 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-xl hover:shadow-brand-500/10 hover:-translate-y-1 transition-all duration-300 relative overflow-hidden">
                                         <!-- Decorative top border line -->
@@ -316,94 +588,101 @@
                                             ${item.desc}
                                         </p>
                                     </a>
-                                `).join('')}
+                                `,
+                                  )
+                                  .join("")}
                             </div>
                         </section>
                     `;
-                }
-            });
-
-            if (hasResults) {
-                bookmarksContainer.innerHTML = html;
-                bookmarksContainer.classList.remove('hidden');
-                emptyState.classList.add('hidden');
-            } else {
-                bookmarksContainer.classList.add('hidden');
-                emptyState.classList.remove('hidden');
-            }
-        }
-
-        // Search Functionality
-        searchInput.addEventListener('input', (e) => {
-            const val = e.target.value;
-            renderBookmarks(val);
-            if (val.length > 0) {
-                clearSearchBtn.classList.remove('hidden');
-            } else {
-                clearSearchBtn.classList.add('hidden');
-            }
+          }
         });
 
-        clearSearchBtn.addEventListener('click', () => {
-            searchInput.value = '';
-            renderBookmarks('');
-            clearSearchBtn.classList.add('hidden');
-            searchInput.focus();
-        });
+        if (hasResults) {
+          bookmarksContainer.innerHTML = html;
+          bookmarksContainer.classList.remove("hidden");
+          emptyState.classList.add("hidden");
+        } else {
+          bookmarksContainer.classList.add("hidden");
+          emptyState.classList.remove("hidden");
+        }
+      }
 
-        // Theme Toggle Logic
-        function setTheme(isDark) {
-            if (isDark) {
-                document.documentElement.classList.add('dark');
-                themeIcon.classList.replace('fa-moon', 'fa-sun');
-                themeText.textContent = '切換淺色模式';
-                localStorage.theme = 'dark';
-            } else {
-                document.documentElement.classList.remove('dark');
-                themeIcon.classList.replace('fa-sun', 'fa-moon');
-                themeText.textContent = '切換深色模式';
-                localStorage.theme = 'light';
-            }
+      // Search Functionality
+      searchInput.addEventListener("input", (e) => {
+        const val = e.target.value;
+        renderBookmarks(val);
+        if (val.length > 0) {
+          clearSearchBtn.classList.remove("hidden");
+        } else {
+          clearSearchBtn.classList.add("hidden");
+        }
+      });
+
+      clearSearchBtn.addEventListener("click", () => {
+        searchInput.value = "";
+        renderBookmarks("");
+        clearSearchBtn.classList.add("hidden");
+        searchInput.focus();
+      });
+
+      // Theme Toggle Logic
+      function setTheme(isDark) {
+        if (isDark) {
+          document.documentElement.classList.add("dark");
+          themeIcon.classList.replace("fa-moon", "fa-sun");
+          themeText.textContent = "切換淺色模式";
+          localStorage.theme = "dark";
+        } else {
+          document.documentElement.classList.remove("dark");
+          themeIcon.classList.replace("fa-sun", "fa-moon");
+          themeText.textContent = "切換深色模式";
+          localStorage.theme = "light";
+        }
+      }
+
+      themeToggle.addEventListener("click", () => {
+        const isDark = document.documentElement.classList.contains("dark");
+        setTheme(!isDark);
+      });
+
+      // Mobile Sidebar Toggle
+      function toggleSidebar() {
+        const isClosed = sidebar.classList.contains("-translate-x-full");
+        if (isClosed) {
+          sidebar.classList.remove("-translate-x-full");
+          mobileOverlay.classList.remove("hidden");
+        } else {
+          sidebar.classList.add("-translate-x-full");
+          mobileOverlay.classList.add("hidden");
+        }
+      }
+
+      function closeSidebarOnMobile() {
+        if (window.innerWidth < 1024) {
+          // lg breakpoint
+          sidebar.classList.add("-translate-x-full");
+          mobileOverlay.classList.add("hidden");
+        }
+      }
+
+      // Initialize
+      function init() {
+        // Check system preference or saved theme
+        if (
+          localStorage.theme === "dark" ||
+          (!("theme" in localStorage) &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches)
+        ) {
+          setTheme(true);
+        } else {
+          setTheme(false);
         }
 
-        themeToggle.addEventListener('click', () => {
-            const isDark = document.documentElement.classList.contains('dark');
-            setTheme(!isDark);
-        });
+        renderNavigation();
+        renderBookmarks();
+      }
 
-        // Mobile Sidebar Toggle
-        function toggleSidebar() {
-            const isClosed = sidebar.classList.contains('-translate-x-full');
-            if (isClosed) {
-                sidebar.classList.remove('-translate-x-full');
-                mobileOverlay.classList.remove('hidden');
-            } else {
-                sidebar.classList.add('-translate-x-full');
-                mobileOverlay.classList.add('hidden');
-            }
-        }
-
-        function closeSidebarOnMobile() {
-            if (window.innerWidth < 1024) { // lg breakpoint
-                sidebar.classList.add('-translate-x-full');
-                mobileOverlay.classList.add('hidden');
-            }
-        }
-
-        // Initialize
-        function init() {
-            // Check system preference or saved theme
-            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                setTheme(true);
-            } else {
-                setTheme(false);
-            }
-
-            renderNavigation();
-            renderBookmarks();
-        }
-
-        init();
+      init();
     </script>
-</body>
+  </body>
 </html>
